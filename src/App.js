@@ -175,7 +175,7 @@ import PaymentResult from "./pages/PaymentResult.js";
 import AdminSubjectiveExamsAttendanceAnalytics from "./pages/AdminSubjectiveExamsAttendanceAnalytics";
 import AdminObjectiveExamsAttendanceAnalytics from "./pages/AdminObjectiveExamsAttendanceAnalytics";
 import ApproveStudentsListPage from "./pages/ApproveStudentsListPage.js";
-
+import SendSms from "./pages/SendSms";
 
 
 function App() {
@@ -535,7 +535,7 @@ function App() {
         <Route path="/college-dashboard" element={<ProtectedRoute><CollegeDashboard /></ProtectedRoute>} />
         <Route path="/appGenesis-dashboard" element={<ProtectedRoute><AppGenesisDashboard /></ProtectedRoute>} />
         <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
-       
+       <Route path="/sendsms" element={<ProtectedRoute><SendSms /></ProtectedRoute>} />
 
          <Route
           path="/approve-students"
