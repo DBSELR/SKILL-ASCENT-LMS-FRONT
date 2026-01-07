@@ -4,7 +4,6 @@ import HeaderTop from "../components/HeaderTop";
 import RightSidebar from "../components/RightSidebar";
 import LeftSidebar from "../components/LeftSidebar";
 import Footer from "../components/Footer";
-import { Modal, Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import API_BASE_URL from "../config";
 
@@ -18,91 +17,195 @@ export default function StudentBulkSms() {
 
   const [unames, setUnames] = useState([]);
   const [programmes, setProgrammes] = useState([]);
-  const [groupSem, setGroupSem] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [semesters, setSemesters] = useState([]);
 
-    
-  
-
+  /* ---------------- INITIAL LOAD ---------------- */
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/BulkSms/unames`)
-      .then(r => setUnames(r.data));
+    loadFilters();
+    loadCount(); // overall count on page load
   }, []);
 
-  useEffect(() => {
-    if (uname)
-      axios.get(`${API_BASE_URL}/BulkSms/programmes/${uname}`)
-        .then(r => setProgrammes(r.data));
-  }, [uname]);
+  const loadFilters = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/BulkSms/filters`);
+      setUnames(res.data.unames || []);
+      setProgrammes(res.data.programmes || []);
+      setGroups(res.data.groups || []);
+      setSemesters(res.data.semesters || []);
+    } catch (err) {
+      toast.error("Failed to load dropdowns");
+    }
+  };
+
+  /* ---------------- COUNT (DYNAMIC) ---------------- */
+  const loadCount = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/BulkSms/count`, {
+        params: {
+          uname: uname || null,
+          programme: programme || null,
+          group: group || null,
+          semester: semester || null
+        }
+      });
+      setCount(res.data);
+    } catch {
+      setCount(0);
+    }
+  };
 
   useEffect(() => {
-    if (uname && programme)
-      axios.get(`${API_BASE_URL}/BulkSms/groupsemester`, {
-        params: { uname, programme }
-      }).then(r => setGroupSem(r.data));
-  }, [programme]);
+    loadCount();
+  }, [uname, programme, group, semester]);
 
-  useEffect(() => {
-    if (uname && programme && group && semester)
-      axios.get(`${API_BASE_URL}/BulkSms/count`, {
-        params: { uname, programme, group, semester }
-      }).then(r => setCount(r.data));
-  }, [group, semester]);
-
+  /* ---------------- SEND SMS ---------------- */
   const sendSms = async () => {
-    await axios.post(`${API_BASE_URL}/BulkSms/enqueue`, {
-      uname,
-      programme,
-      group,
-      semester,
-      message
-    });
-    alert(`✅ SMS queued for ${count} students`);
+    if (!message.trim()) {
+      toast.warning("Please enter SMS message");
+      return;
+    }
+
+    if (count === 0) {
+      toast.warning("No mobile numbers found");
+      return;
+    }
+
+    try {
+      await axios.post(`${API_BASE_URL}/BulkSms/enqueue`, {
+        uname: uname || null,
+        programme: programme || null,
+        group: group || null,
+        semester: semester || null,
+        message
+      });
+
+      toast.success(`✅ SMS queued for ${count} students`);
+      setMessage("");
+    }catch (err) {
+  console.error(err);
+  toast.error(
+    err.response?.data?.message ||
+    err.message ||
+    "Failed to queue SMS"
+  );
+}
+
+  };
+
+  /* ---------------- RESET FILTERS ---------------- */
+  const resetFilters = () => {
+    setUname("");
+    setProgramme("");
+    setGroup("");
+    setSemester("");
+    loadCount();
   };
 
   return (
-    
-    <div style={{ padding: 20 }}>
-         <HeaderTop />
-              <RightSidebar />
-              <LeftSidebar />
-      <h2>Student Bulk SMS</h2>
+    <div id="main_content" className="font-muli theme-blush">
+      <HeaderTop />
+      <RightSidebar />
+      <LeftSidebar />
 
-      <select onChange={e => setUname(e.target.value)}>
-        <option value="">Select Uname</option>
-        {unames.map(x => <option key={x}>{x}</option>)}
-      </select>
+      <div className="section-wrapper">
+        <div className="page pt-0">
+          <div className="section-body mt-3 pt-0">
+            <div className="container-fluid">
+              <h3 className="mb-3">📢 Student Bulk SMS</h3>
 
-      <select onChange={e => setProgramme(e.target.value)}>
-        <option value="">Select Programme</option>
-        {programmes.map(x => <option key={x}>{x}</option>)}
-      </select>
+              {/* FILTERS */}
+              <div className="row mb-3">
+                <div className="col-md-3">
+                  <label>Uname</label>
+                  <select
+                    className="form-control"
+                    value={uname}
+                    onChange={e => setUname(e.target.value)}
+                  >
+                    <option value="">All Unames</option>
+                    {unames.map(x => (
+                      <option key={x} value={x}>{x}</option>
+                    ))}
+                  </select>
+                </div>
 
-      <select onChange={e => setGroup(e.target.value)}>
-        <option value="">Select Group</option>
-        {[...new Set(groupSem.map(x => x.group))].map(x =>
-          <option key={x}>{x}</option>
-        )}
-      </select>
+                <div className="col-md-3">
+                  <label>Programme</label>
+                  <select
+                    className="form-control"
+                    value={programme}
+                    onChange={e => setProgramme(e.target.value)}
+                  >
+                    <option value="">All Programmes</option>
+                    {programmes.map(x => (
+                      <option key={x} value={x}>{x}</option>
+                    ))}
+                  </select>
+                </div>
 
-      <select onChange={e => setSemester(e.target.value)}>
-        <option value="">Select Semester</option>
-        {[...new Set(groupSem.map(x => x.semester))].map(x =>
-          <option key={x}>{x}</option>
-        )}
-      </select>
+                <div className="col-md-3">
+                  <label>Group</label>
+                  <select
+                    className="form-control"
+                    value={group}
+                    onChange={e => setGroup(e.target.value)}
+                  >
+                    <option value="">All Groups</option>
+                    {groups.map(x => (
+                      <option key={x} value={x}>{x}</option>
+                    ))}
+                  </select>
+                </div>
 
-      <p><b>📱 Mobile Count:</b> {count}</p>
+                <div className="col-md-3">
+                  <label>Semester</label>
+                  <select
+                    className="form-control"
+                    value={semester}
+                    onChange={e => setSemester(e.target.value)}
+                  >
+                    <option value="">All Semesters</option>
+                    {semesters.map(x => (
+                      <option key={x} value={x}>{x}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
-      <textarea
-        placeholder="Message (use {MOBILE})"
-        rows="5"
-        onChange={e => setMessage(e.target.value)}
-        style={{ width: "100%" }}
-      />
+              {/* COUNT */}
+              <div className="alert alert-info">
+                <b>📱 Total Mobile Numbers :</b> {count}
+              </div>
 
-      <button onClick={sendSms} disabled={!count}>
-        Send SMS
-      </button>
+              {/* MESSAGE */}
+              <div className="mb-3">
+                <label>SMS Message</label>
+                <textarea
+                  className="form-control"
+                  rows="4"
+                  placeholder="Use {MOBILE} if needed"
+                  value={message}
+                  onChange={e => setMessage(e.target.value)}
+                />
+              </div>
+
+              {/* ACTIONS */}
+              <div className="d-flex gap-2">
+                <button className="btn btn-primary" onClick={sendSms}>
+                  Send SMS
+                </button>
+
+                <button className="btn btn-secondary" onClick={resetFilters}>
+                  Reset Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Footer />
     </div>
   );
 }
