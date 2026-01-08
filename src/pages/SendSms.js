@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import HeaderTop from "../components/HeaderTop";
 import RightSidebar from "../components/RightSidebar";
@@ -9,21 +9,32 @@ import API_BASE_URL from "../config";
 
 export default function StudentBulkSms() {
   const [uname, setUname] = useState("");
-  const [programme, setProgramme] = useState("");
-  const [group, setGroup] = useState("");
   const [semester, setSemester] = useState("");
   const [message, setMessage] = useState("");
   const [count, setCount] = useState(0);
 
   const [unames, setUnames] = useState([]);
   const [programmes, setProgrammes] = useState([]);
-  const [groups, setGroups] = useState([]);
   const [semesters, setSemesters] = useState([]);
+
+  const [selectedProgrammes, setSelectedProgrammes] = useState([]);
+  const [showProgrammeDropdown, setShowProgrammeDropdown] = useState(false);
+  const programmeRef = useRef(null);
 
   /* ---------------- INITIAL LOAD ---------------- */
   useEffect(() => {
     loadFilters();
-    loadCount(); // overall count on page load
+    loadCount();
+  }, []);
+
+  useEffect(() => {
+    const handleOutside = (e) => {
+      if (programmeRef.current && !programmeRef.current.contains(e.target)) {
+        setShowProgrammeDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
   const loadFilters = async () => {
@@ -31,22 +42,32 @@ export default function StudentBulkSms() {
       const res = await axios.get(`${API_BASE_URL}/BulkSms/filters`);
       setUnames(res.data.unames || []);
       setProgrammes(res.data.programmes || []);
-      setGroups(res.data.groups || []);
       setSemesters(res.data.semesters || []);
-    } catch (err) {
+    } catch {
       toast.error("Failed to load dropdowns");
     }
   };
 
-  /* ---------------- COUNT (DYNAMIC) ---------------- */
+  /* ---------------- PROGRAMME TOGGLE ---------------- */
+  const toggleProgramme = (prog) => {
+    setSelectedProgrammes(prev =>
+      prev.includes(prog)
+        ? prev.filter(x => x !== prog)
+        : [...prev, prog]
+    );
+  };
+
+  /* ---------------- COUNT ---------------- */
   const loadCount = async () => {
     try {
       const res = await axios.get(`${API_BASE_URL}/BulkSms/count`, {
         params: {
           uname: uname || null,
-          programme: programme || null,
-          group: group || null,
-          semester: semester || null
+          semester: semester || null,
+          programmes:
+            selectedProgrammes.length > 0
+              ? selectedProgrammes.join(",")
+              : null
         }
       });
       setCount(res.data);
@@ -57,7 +78,7 @@ export default function StudentBulkSms() {
 
   useEffect(() => {
     loadCount();
-  }, [uname, programme, group, semester]);
+  }, [uname, semester, selectedProgrammes]);
 
   /* ---------------- SEND SMS ---------------- */
   const sendSms = async () => {
@@ -74,31 +95,23 @@ export default function StudentBulkSms() {
     try {
       await axios.post(`${API_BASE_URL}/BulkSms/enqueue`, {
         uname: uname || null,
-        programme: programme || null,
-        group: group || null,
         semester: semester || null,
+        programmes: selectedProgrammes,
         message
       });
 
       toast.success(`✅ SMS queued for ${count} students`);
       setMessage("");
-    }catch (err) {
-  console.error(err);
-  toast.error(
-    err.response?.data?.message ||
-    err.message ||
-    "Failed to queue SMS"
-  );
-}
-
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to queue SMS");
+    }
   };
 
-  /* ---------------- RESET FILTERS ---------------- */
+  /* ---------------- RESET ---------------- */
   const resetFilters = () => {
     setUname("");
-    setProgramme("");
-    setGroup("");
     setSemester("");
+    setSelectedProgrammes([]);
     loadCount();
   };
 
@@ -114,8 +127,8 @@ export default function StudentBulkSms() {
             <div className="container-fluid">
               <h3 className="mb-3">📢 Student Bulk SMS</h3>
 
-              {/* FILTERS */}
               <div className="row mb-3">
+                {/* UNAME */}
                 <div className="col-md-3">
                   <label>Uname</label>
                   <select
@@ -130,34 +143,41 @@ export default function StudentBulkSms() {
                   </select>
                 </div>
 
-                <div className="col-md-3">
+                {/* PROGRAMME MULTI (dropdown with checkboxes) */}
+                <div className="col-md-4" style={{ position: "relative" }} ref={programmeRef}>
                   <label>Programme</label>
-                  <select
-                    className="form-control"
-                    value={programme}
-                    onChange={e => setProgramme(e.target.value)}
+                  <button
+                    type="button"
+                    className="form-control text-start"
+                    onClick={() => setShowProgrammeDropdown(s => !s)}
                   >
-                    <option value="">All Programmes</option>
-                    {programmes.map(x => (
-                      <option key={x} value={x}>{x}</option>
-                    ))}
-                  </select>
+                    {selectedProgrammes.length > 0
+                      ? selectedProgrammes.join(", ")
+                      : "All Programmes"}
+                  </button>
+
+                  {showProgrammeDropdown && (
+                    <div
+                      className="border rounded p-2 bg-white"
+                      style={{ position: "absolute", zIndex: 1000, width: "100%", maxHeight: 180, overflowY: "auto" }}
+                    >
+                      {programmes.map((p, idx) => (
+                        <div key={p} className="form-check">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id={`prog-${idx}`}
+                            checked={selectedProgrammes.includes(p)}
+                            onChange={() => toggleProgramme(p)}
+                          />
+                          <label className="form-check-label" htmlFor={`prog-${idx}`}>{p}</label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                <div className="col-md-3">
-                  <label>Group</label>
-                  <select
-                    className="form-control"
-                    value={group}
-                    onChange={e => setGroup(e.target.value)}
-                  >
-                    <option value="">All Groups</option>
-                    {groups.map(x => (
-                      <option key={x} value={x}>{x}</option>
-                    ))}
-                  </select>
-                </div>
-
+                {/* SEMESTER */}
                 <div className="col-md-3">
                   <label>Semester</label>
                   <select
@@ -173,33 +193,29 @@ export default function StudentBulkSms() {
                 </div>
               </div>
 
-              {/* COUNT */}
               <div className="alert alert-info">
                 <b>📱 Total Mobile Numbers :</b> {count}
               </div>
 
-              {/* MESSAGE */}
               <div className="mb-3">
                 <label>SMS Message</label>
                 <textarea
                   className="form-control"
                   rows="4"
-                  placeholder="Use {MOBILE} if needed"
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                 />
               </div>
 
-              {/* ACTIONS */}
               <div className="d-flex gap-2">
                 <button className="btn btn-primary" onClick={sendSms}>
                   Send SMS
                 </button>
-
                 <button className="btn btn-secondary" onClick={resetFilters}>
                   Reset Filters
                 </button>
               </div>
+
             </div>
           </div>
         </div>
