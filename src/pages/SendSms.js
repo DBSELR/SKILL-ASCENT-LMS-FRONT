@@ -21,12 +21,18 @@ export default function StudentBulkSms() {
   const [showProgrammeDropdown, setShowProgrammeDropdown] = useState(false);
   const programmeRef = useRef(null);
 
+  /* 🔄 Loader + Status */
+  const [loading, setLoading] = useState(false);
+  const [summary, setSummary] = useState(null);
+  const pollingRef = useRef(null);
+
   /* ---------------- INITIAL LOAD ---------------- */
   useEffect(() => {
     loadFilters();
     loadCount();
   }, []);
 
+  /* ---------------- CLICK OUTSIDE PROGRAMME ---------------- */
   useEffect(() => {
     const handleOutside = (e) => {
       if (programmeRef.current && !programmeRef.current.contains(e.target)) {
@@ -37,6 +43,7 @@ export default function StudentBulkSms() {
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
+  /* ---------------- LOAD FILTERS ---------------- */
   const loadFilters = async () => {
     try {
       const res = await axios.get(`${API_BASE_URL}/BulkSms/filters`);
@@ -50,9 +57,9 @@ export default function StudentBulkSms() {
 
   /* ---------------- PROGRAMME TOGGLE ---------------- */
   const toggleProgramme = (prog) => {
-    setSelectedProgrammes(prev =>
+    setSelectedProgrammes((prev) =>
       prev.includes(prog)
-        ? prev.filter(x => x !== prog)
+        ? prev.filter((x) => x !== prog)
         : [...prev, prog]
     );
   };
@@ -67,8 +74,8 @@ export default function StudentBulkSms() {
           programmes:
             selectedProgrammes.length > 0
               ? selectedProgrammes.join(",")
-              : null
-        }
+              : null,
+        },
       });
       setCount(res.data);
     } catch {
@@ -79,6 +86,32 @@ export default function StudentBulkSms() {
   useEffect(() => {
     loadCount();
   }, [uname, semester, selectedProgrammes]);
+
+  /* ---------------- POLLING STATUS ---------------- */
+  const startPolling = () => {
+    pollingRef.current = setInterval(async () => {
+      try {
+        const res = await axios.get(
+          `${API_BASE_URL}/BulkSms/status-summary`
+        );
+        setSummary(res.data);
+
+        if (res.data.inProgress === 0) {
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+          setLoading(false);
+
+          toast.success(
+            `✅ Sent: ${res.data.sent}, ❌ Failed: ${res.data.failed}`
+          );
+        }
+      } catch {
+        clearInterval(pollingRef.current);
+        setLoading(false);
+        toast.error("Failed to fetch SMS status");
+      }
+    }, 3000);
+  };
 
   /* ---------------- SEND SMS ---------------- */
   const sendSms = async () => {
@@ -92,18 +125,22 @@ export default function StudentBulkSms() {
       return;
     }
 
+    setLoading(true);
+    setSummary(null);
+
     try {
       await axios.post(`${API_BASE_URL}/BulkSms/enqueue`, {
         uname: uname || null,
         semester: semester || null,
         programmes: selectedProgrammes,
-        message
+        message,
       });
 
-      toast.success(`✅ SMS queued for ${count} students`);
-      setMessage("");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to queue SMS");
+      toast.success("📨 SMS queued successfully");
+      startPolling();
+    } catch {
+      setLoading(false);
+      toast.error("Failed to queue SMS");
     }
   };
 
@@ -112,6 +149,8 @@ export default function StudentBulkSms() {
     setUname("");
     setSemester("");
     setSelectedProgrammes([]);
+    setMessage("");
+    setSummary(null);
     loadCount();
   };
 
@@ -127,31 +166,36 @@ export default function StudentBulkSms() {
             <div className="container-fluid">
               <h3 className="mb-3">📢 Student Bulk SMS</h3>
 
+              {/* FILTERS */}
               <div className="row mb-3">
-                {/* UNAME */}
                 <div className="col-md-3">
                   <label>Uname</label>
                   <select
                     className="form-control"
                     value={uname}
-                    onChange={e => setUname(e.target.value)}
+                    onChange={(e) => setUname(e.target.value)}
                   >
                     <option value="">All Unames</option>
-                    {unames.map(x => (
-                      <option key={x} value={x}>{x}</option>
+                    {unames.map((x) => (
+                      <option key={x}>{x}</option>
                     ))}
                   </select>
                 </div>
 
-                {/* PROGRAMME MULTI (dropdown with checkboxes) */}
-                <div className="col-md-4" style={{ position: "relative" }} ref={programmeRef}>
+                <div
+                  className="col-md-4"
+                  ref={programmeRef}
+                  style={{ position: "relative" }}
+                >
                   <label>Programme</label>
                   <button
                     type="button"
                     className="form-control text-start"
-                    onClick={() => setShowProgrammeDropdown(s => !s)}
+                    onClick={() =>
+                      setShowProgrammeDropdown((s) => !s)
+                    }
                   >
-                    {selectedProgrammes.length > 0
+                    {selectedProgrammes.length
                       ? selectedProgrammes.join(", ")
                       : "All Programmes"}
                   </button>
@@ -159,7 +203,13 @@ export default function StudentBulkSms() {
                   {showProgrammeDropdown && (
                     <div
                       className="border rounded p-2 bg-white"
-                      style={{ position: "absolute", zIndex: 1000, width: "100%", maxHeight: 180, overflowY: "auto" }}
+                      style={{
+                        position: "absolute",
+                        zIndex: 1000,
+                        width: "100%",
+                        maxHeight: 180,
+                        overflowY: "auto",
+                      }}
                     >
                       {programmes.map((p, idx) => (
                         <div key={p} className="form-check">
@@ -170,24 +220,28 @@ export default function StudentBulkSms() {
                             checked={selectedProgrammes.includes(p)}
                             onChange={() => toggleProgramme(p)}
                           />
-                          <label className="form-check-label" htmlFor={`prog-${idx}`}>{p}</label>
+                          <label
+                            className="form-check-label"
+                            htmlFor={`prog-${idx}`}
+                          >
+                            {p}
+                          </label>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
 
-                {/* SEMESTER */}
                 <div className="col-md-3">
                   <label>Semester</label>
                   <select
                     className="form-control"
                     value={semester}
-                    onChange={e => setSemester(e.target.value)}
+                    onChange={(e) => setSemester(e.target.value)}
                   >
                     <option value="">All Semesters</option>
-                    {semesters.map(x => (
-                      <option key={x} value={x}>{x}</option>
+                    {semesters.map((x) => (
+                      <option key={x}>{x}</option>
                     ))}
                   </select>
                 </div>
@@ -203,19 +257,43 @@ export default function StudentBulkSms() {
                   className="form-control"
                   rows="4"
                   value={message}
-                  onChange={e => setMessage(e.target.value)}
+                  onChange={(e) => setMessage(e.target.value)}
                 />
               </div>
 
-              <div className="d-flex gap-2">
-                <button className="btn btn-primary" onClick={sendSms}>
+              <div className="d-flex gap-2 mb-3">
+                <button
+                  className="btn btn-primary"
+                  onClick={sendSms}
+                  disabled={loading}
+                >
                   Send SMS
                 </button>
-                <button className="btn btn-secondary" onClick={resetFilters}>
-                  Reset Filters
+                <button
+                  className="btn btn-secondary"
+                  onClick={resetFilters}
+                  disabled={loading}
+                >
+                  Reset
                 </button>
               </div>
 
+              {/* LOADER */}
+              {loading && (
+                <div className="text-center my-3">
+                  <div className="spinner-border text-primary"></div>
+                  <p>Sending SMS… please wait</p>
+                </div>
+              )}
+
+              {/* SUMMARY */}
+              {summary && !loading && (
+                <div className="alert alert-success">
+                  <b>Total:</b> {summary.total} |
+                  <b> Sent:</b> {summary.sent} |
+                  <b> Failed:</b> {summary.failed}
+                </div>
+              )}
             </div>
           </div>
         </div>
