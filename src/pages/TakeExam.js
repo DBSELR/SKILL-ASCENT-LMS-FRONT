@@ -167,7 +167,7 @@ function TakeExam() {
                 htmlFor={`q${current.qid}-${opt}`}
                 style={{
                   fontWeight: "600",
-                  color: checked ? "#5a67d8" : "#333",
+                  color: checked ? "#e65f1e" : "#333",
                 }}
               >
                 {value}

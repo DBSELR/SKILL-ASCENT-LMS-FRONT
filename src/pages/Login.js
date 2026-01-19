@@ -151,7 +151,7 @@ function Login() {
       >
         <div className="card-body p-4">
           <div className="text-center mb-4">
-            <img src="/assets/EdVedha-Logo.png" alt="dbase" />
+            <img src="/assets/logo.png" alt="dbase" />
           </div>
 
           <form onSubmit={handleSubmit} noValidate>

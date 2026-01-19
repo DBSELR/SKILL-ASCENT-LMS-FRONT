@@ -15,14 +15,14 @@
 .policy-page h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #5a67d8; /* Your primary color */
+  color: #e65f1e; /* Your primary color */
   margin-bottom: 15px;
   text-align: center;
 }
 
 .policy-page h2 {
   font-size: 24px;
-  color: #5a67d8;
+  color: #e65f1e;
   margin-top: 25px;
   margin-bottom: 12px;
   font-weight: 600;
@@ -30,7 +30,7 @@
 
 .policy-page h3 {
   font-size: 20px;
-  color: #5a67d8; /* Dark shade */
+  color: #e65f1e; /* Dark shade */
   margin-top: 18px;
   margin-bottom: 8px;
   font-weight: 600;
@@ -94,7 +94,7 @@
 
 
 .back-btn {
-  background: #5a67d8;
+  background: #e65f1e;
   color: white;
   padding: 8px 16px;
   border: none;
@@ -106,5 +106,5 @@
 }
 
 .back-btn:hover {
-  background: #5a67d8;
+  background: #e65f1e;
 }

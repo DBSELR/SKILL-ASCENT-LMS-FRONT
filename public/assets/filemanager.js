@@ -19,7 +19,7 @@ var optionsDonutTop = {
             }
         }
     },
-    colors: ['#6435c9', '#2185d0', '#e03997', '#21ba45'],  
+    colors: ['#6435c9', '#e65f2e', '#e03997', '#21ba45'],  
     series: [6, 8, 4, 3],
     labels: ['Images', 'Doc', 'PDF', 'Excel'],
     legend: {

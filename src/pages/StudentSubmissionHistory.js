@@ -140,7 +140,7 @@ function StudentSubmissionHistory() {
                               <td>
                                 {s.FilePath ? (
                                   <a
-                                    href={`https://localhost:7045${s.FilePath}`}
+                                    href={`https://api.skillascent.in${s.FilePath}`}
                                     target="_blank"
                                     rel="noreferrer"
                                     className="btn btn-sm btn-outline-primary"

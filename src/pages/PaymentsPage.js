@@ -70,7 +70,7 @@ function PaymentsPage() {
                       className={`nav-link fw-bold text-dark border-0 ${activeTab === "fees-list" ? "active" : ""}`}
                       href="#fees-list"
                       onClick={(e) => { e.preventDefault(); setActiveTab("fees-list"); }}
-                      style={activeTab === "fees-list" ? { borderBottom: "3px solid #5a67d8" } : {}}
+                      style={activeTab === "fees-list" ? { borderBottom: "3px solid #e65f1e" } : {}}
                     >
                       <i className="fa fa-list mr-1 text-primary"></i> Fee List
                     </a>
@@ -82,7 +82,7 @@ function PaymentsPage() {
                       className={`nav-link fw-bold text-dark border-0 ${activeTab === "fee-template" ? "active" : ""}`}
                       href="#fee-template"
                       onClick={(e) => { e.preventDefault(); setActiveTab("fee-template"); }}
-                      style={activeTab === "fee-template" ? { borderBottom: "3px solid #5a67d8" } : {}}
+                      style={activeTab === "fee-template" ? { borderBottom: "3px solid #e65f1e" } : {}}
                     >
                       <i className="fa fa-cogs mr-1 text-primary"></i> Fee Templates
                     </a>
@@ -93,7 +93,7 @@ function PaymentsPage() {
                       className={`nav-link fw-bold text-dark border-0 ${activeTab === "transactions" ? "active" : ""}`}
                       href="#transactions"
                       onClick={(e) => { e.preventDefault(); setActiveTab("transactions"); }}
-                      style={activeTab === "transactions" ? { borderBottom: "3px solid #5a67d8" } : {}}
+                      style={activeTab === "transactions" ? { borderBottom: "3px solid #e65f1e" } : {}}
                     >
                       <i className="fa fa-exchange-alt mr-1 text-primary"></i> Transactions
                     </a>

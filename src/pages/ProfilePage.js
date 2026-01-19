@@ -246,7 +246,7 @@ function ProfilePage() {
 
     setUpdateLoading(true);
 
-    const putUrl = `https://localhost:7045/api/User/${userId}`;
+    const putUrl = `https://api.skillascent.in/api/User/${userId}`;
     const bodyPayload = {
       Role: editProfile.role,
       Status: "Active", // or real status
@@ -440,7 +440,7 @@ function ProfilePage() {
         }
 
         .idcard-header {
-          background: linear-gradient(135deg, #4f46e5 0%, #6d28d9 100%);
+          background: linear-gradient(135deg, #e65f1e 0%, #6d28d9 100%);
           color: #fff;
           padding: 1rem 1.25rem 3.5rem;
           position: relative;
@@ -575,7 +575,7 @@ function ProfilePage() {
           color: #78350f;
         }
         .idcard-btn-pass {
-          background-color: #4f46e5;
+          background-color: #e65f1e;
           color: #fff;
         }
 
@@ -604,7 +604,7 @@ function ProfilePage() {
           border-top: 1px solid #e5e7eb;
           background: repeating-linear-gradient(
             -45deg,
-            #4f46e5 0 10px,
+            #e65f1e 0 10px,
             #6d28d9 10px 20px
           );
           color: #fff;
@@ -679,7 +679,7 @@ function ProfilePage() {
               0 2px 4px rgba(0,0,0,0.6);
           }
           .idcard-header {
-            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            background: linear-gradient(135deg, #e65f1e 0%, #6d28d9 100%);
           }
           .idcard-name {
             color: #f9fafb;

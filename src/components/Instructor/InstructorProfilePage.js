@@ -93,7 +93,7 @@ const InstructorProfilePage = ({ instructorId }) => {
   const handlePrint = () => {
     const printContent = idCardRef.current.innerHTML;
     const printWindow = window.open("", "", "width=800,height=600");
-    printWindow.document.write(`<html><head><title>ID Card</title><style>body{font-family:sans-serif;margin:0;padding:20px;}img{border-radius:50%;width:100px;height:100px;object-fit:cover;}h5{margin-bottom:5px;}p{margin:2px 0;}</style></head><body>${printContent}</body></html>`);
+    printWindow.document.write(`<html><head><title>ID Card</title><style>@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');body{font-family:"Barlow",sans-serif;margin:0;padding:20px;}img{border-radius:50%;width:100px;height:100px;object-fit:cover;}h5{margin-bottom:5px;}p{margin:2px 0;}</style></head><body>${printContent}</body></html>`);
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => printWindow.print(), 500);

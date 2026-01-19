@@ -153,7 +153,8 @@ const StudentProfilePage = ({ studentId }) => {
     printWindow.document.write(`
       <html><head><title>ID Card</title>
       <style>
-        body { margin: 0; padding: 20px; background: #f5f5f5; font-family: sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');
+        body { margin: 0; padding: 20px; background: #f5f5f5; font-family: "Barlow", sans-serif; }
       </style></head>
       <body>${printContent}</body></html>
     `);
@@ -192,7 +193,7 @@ const StudentProfilePage = ({ studentId }) => {
                       border: '1px solid #ddd',
                       borderRadius: '8px',
                       overflow: 'hidden',
-                      fontFamily: 'sans-serif',
+                      fontFamily: 'Barlow, sans-serif',
                       background: '#fff',
                       textAlign: 'center',
                       boxShadow: '0 0 10px rgba(0,0,0,0.1)'

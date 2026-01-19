@@ -381,7 +381,7 @@ const guidelinesBlock = showGuidelines && (
           gap: 6px; transition: all 0.3s;
         }
         .tab-btn:hover { background-color: #e2e6ea; color: #000; }
-        .tab-btn.active { background-color: #5a67d8; color: #fff; border-color: #5a67d8;}
+        .tab-btn.active { background-color: #e65f1e; color: #fff; border-color: #e65f1e;}
         @media (max-width: 768px) {
           .tab-btn { padding: 0.5rem 1rem; font-size: 14px;}
         }
@@ -591,7 +591,7 @@ function ExamCard({ exam, formatDate, formatTime, getExamStatus, openGuidelines,
                 <div className="d-flex gap-2 flex-wrap justify-content-center" style={{ gap: '20px' }}>
                   {exam.fileurl && (
                     <a
-                      href={`https://localhost:7045${exam.fileurl}`}
+                      href={`https://api.skillascent.in${exam.fileurl}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-sm btn-outline-primary"

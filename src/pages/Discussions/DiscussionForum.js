@@ -91,7 +91,7 @@ function DiscussionForum() {
                         height: "50px",
                         borderRadius: "50%",
                         // backgroundColor: "#e6f4f9", 
-                        color: "#5a67d8", // blue icon
+                        color: "#e65f1e", // blue icon
                         fontSize: "18px"
                       }}
                     >
@@ -130,7 +130,7 @@ function DiscussionForum() {
                     <button
                       className="btn"
                       style={{
-                        backgroundColor: "#5a67d8",
+                        backgroundColor: "#e65f1e",
                         color: "white",
                         fontWeight: "bold",
                         borderRadius: "10px",

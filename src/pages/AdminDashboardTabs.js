@@ -62,7 +62,7 @@ function AdminDashboardTabs() {
                   <ul
                     className="nav nav-tabs page-header-tab animate-welcome"
                     role="tablist"
-                    style={{ borderBottom: "2px solid #5a67d8", padding: "0px" }}
+                    style={{ borderBottom: "2px solid #e65f1e", padding: "0px" }}
                   >
                     {tabs.map((tab) => (
                       <li className="nav-item" key={tab.key}>
@@ -76,7 +76,7 @@ function AdminDashboardTabs() {
                             fontSize: "15px",
                             padding: "5px 6px",
                             border: "none",
-                            borderBottom: activeTab === tab.key ? "3px solid #5a67d8" : "none",
+                            borderBottom: activeTab === tab.key ? "3px solid #e65f1e" : "none",
                             transition: "all 0.3s ease",
                           }}
                         >

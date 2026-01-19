@@ -4,9 +4,9 @@
 /* Variables & Reset                             */
 /* ============================================= */
 :root {
-  --primary-color: #4f46e5;
+  --primary-color: #e65f1e;
   /* Indigo 600 */
-  --primary-hover: #4338ca;
+  --primary-hover: #e65f1e;
   /* Indigo 700 */
   --secondary-bg: #f3f4f6;
   /* Gray 100 */

@@ -335,7 +335,7 @@ const StudentLiveClassView = () => {
   className="btn btn-sm btn-info mt-2"
   onClick={() => {
    const fullUrl = cls.fileurl.startsWith("/")
-  ? `http://localhost:7045${cls.fileurl}`
+  ? `http://api.skillascent.in${cls.fileurl}`
   : cls.fileurl;
 
 console.log("🎬 Opening recording:", fullUrl);

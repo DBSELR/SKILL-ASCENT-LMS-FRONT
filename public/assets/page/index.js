@@ -30,7 +30,7 @@ if (jQuery("#apex-chart-line-column").length) {
             type: 'line',
             data: [30, 25, 36, 30, 40, 35, 64, 52, 59, 36, 39]
         }],
-        colors: ['#6435c9', '#45aaf2', '#5a67d8'],
+        colors: ['#6435c9', '#45aaf2', '#e65f1e'],
         stroke: {
             width: [0, 2, 5],
             curve: 'smooth'
@@ -79,7 +79,7 @@ $(document).ready(function() {
                 top: 1
             }
         },
-        colors: ['#5a67d8', '#6435c9', '#45aaf2'],
+        colors: ['#e65f1e', '#6435c9', '#45aaf2'],
         series: [{
             name: 'Sales',
             data: [80, 50, 30, 40, 100, 20],
@@ -146,7 +146,7 @@ var options = {
         horizontalAlign: 'center',
         show: true,
     },
-    colors: ['#45aaf2', '#6435c9', '#5a67d8'],
+    colors: ['#45aaf2', '#6435c9', '#e65f1e'],
     series: [55, 35, 10]
 }
 var chart = new ApexCharts(document.querySelector("#apex-DeviceusebyStudent"), options);

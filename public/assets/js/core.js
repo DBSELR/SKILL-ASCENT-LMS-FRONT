@@ -409,7 +409,7 @@ window.anchor= {
         'teal-light': '#6bdbcf',
         'teal-lighter': '#bfefea',
         'teal-lightest': '#eafaf8',
-        'cyan': '#5a67d8',
+        'cyan': '#e65f1e',
         'cyan-darkest': '#052025',
         'cyan-darker': '#09414a',
         'cyan-dark': '#128293',

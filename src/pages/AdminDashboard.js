@@ -126,7 +126,7 @@ function AdminDashboard() {
               {/* Welcome Header */}
               <div className="jumbotron bg-light rounded shadow-sm mb-3 welcome-card dashboard-hero">
                 <h2 className="page-title text-primary pt-0 dashboard-hero-title">
-                  Welcome back, <strong>{adminName}</strong> 👋
+                  Welcome back,<strong>{adminName}</strong>👋
                 </h2>
                 <p className="text-muted mb-0 dashboard-hero-sub">
                   Here’s a quick snapshot of your Admin LMS dashboard.
