@@ -137,7 +137,7 @@
                           <td>{new Date(s.submissionDate).toLocaleString()}</td>
                           <td>
                             <a
-                              href={`https://api.skillascent.in${s.filePath}`}
+                              href={`https://localhost:7045${s.filePath}`}
                               target="_blank"
                               rel="noopener noreferrer"
                             >

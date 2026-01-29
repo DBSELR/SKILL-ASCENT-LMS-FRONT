@@ -26,10 +26,15 @@ export default function StudentBulkSms() {
   const [summary, setSummary] = useState(null);
   const pollingRef = useRef(null);
 
+  const [templateCodes, setTemplateCodes] = useState([]);
+const [templateCode, setTemplateCode] = useState("");
+
+
   /* ---------------- INITIAL LOAD ---------------- */
   useEffect(() => {
     loadFilters();
     loadCount();
+    loadTemplateCodes();
   }, []);
 
   /* ---------------- CLICK OUTSIDE PROGRAMME ---------------- */
@@ -42,6 +47,30 @@ export default function StudentBulkSms() {
     document.addEventListener("mousedown", handleOutside);
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
+
+  const loadTemplateCodes = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/BulkSms/tempcodes`);
+      setTemplateCodes(res.data || []);
+    } catch {
+      toast.error("Failed to load template codes");
+    }
+  };
+
+  const loadTemplateContent = async (code) => {
+    if (!code) {
+      setMessage("");
+      return;
+    }
+    try {
+      const res = await axios.get(`${API_BASE_URL}/BulkSms/TemplateContent/${code}`);
+      setMessage(res.data || "");
+    } catch {
+      toast.error("Failed to load template content");
+      setMessage("");
+    }
+  };
+
 
   /* ---------------- LOAD FILTERS ---------------- */
   const loadFilters = async () => {
@@ -149,6 +178,7 @@ export default function StudentBulkSms() {
     setUname("");
     setSemester("");
     setSelectedProgrammes([]);
+    setTemplateCode("");
     setMessage("");
     setSummary(null);
     loadCount();
@@ -169,13 +199,13 @@ export default function StudentBulkSms() {
               {/* FILTERS */}
               <div className="row mb-3">
                 <div className="col-md-3">
-                  <label>Uname</label>
+                  <label>University</label>
                   <select
                     className="form-control"
                     value={uname}
                     onChange={(e) => setUname(e.target.value)}
                   >
-                    <option value="">All Unames</option>
+                    <option value="">All</option>
                     {unames.map((x) => (
                       <option key={x}>{x}</option>
                     ))}
@@ -187,7 +217,7 @@ export default function StudentBulkSms() {
                   ref={programmeRef}
                   style={{ position: "relative" }}
                 >
-                  <label>Programme</label>
+                  <label>Course</label>
                   <button
                     type="button"
                     className="form-control text-start"
@@ -197,7 +227,7 @@ export default function StudentBulkSms() {
                   >
                     {selectedProgrammes.length
                       ? selectedProgrammes.join(", ")
-                      : "All Programmes"}
+                      : "All"}
                   </button>
 
                   {showProgrammeDropdown && (
@@ -233,18 +263,38 @@ export default function StudentBulkSms() {
                 </div>
 
                 <div className="col-md-3">
-                  <label>Semester</label>
+                  <label>Course Status</label>
                   <select
                     className="form-control"
                     value={semester}
                     onChange={(e) => setSemester(e.target.value)}
                   >
-                    <option value="">All Semesters</option>
+                    <option value="">All</option>
                     {semesters.map((x) => (
                       <option key={x}>{x}</option>
                     ))}
                   </select>
                 </div>
+
+                <div className="col-md-3">
+                  <label>Template Code</label>
+                  <select
+                    className="form-control"
+                    value={templateCode}
+                    onChange={(e) => {
+                      setTemplateCode(e.target.value);
+                      loadTemplateContent(e.target.value);
+                    }}
+                  >
+                    <option value="">Select Template</option>
+                    {templateCodes.map((t, idx) => (
+                      <option key={idx} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
               </div>
 
               <div className="alert alert-info">

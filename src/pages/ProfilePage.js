@@ -246,7 +246,7 @@ function ProfilePage() {
 
     setUpdateLoading(true);
 
-    const putUrl = `https://api.skillascent.in/api/User/${userId}`;
+    const putUrl = `https://localhost:7045/api/User/${userId}`;
     const bodyPayload = {
       Role: editProfile.role,
       Status: "Active", // or real status

@@ -176,6 +176,7 @@ import AdminSubjectiveExamsAttendanceAnalytics from "./pages/AdminSubjectiveExam
 import AdminObjectiveExamsAttendanceAnalytics from "./pages/AdminObjectiveExamsAttendanceAnalytics";
 import ApproveStudentsListPage from "./pages/ApproveStudentsListPage.js";
 import SendSms from "./pages/SendSms";
+import ApplyDiscount from "./pages/ApplyDiscount";
 
 
 function App() {
@@ -536,6 +537,7 @@ function App() {
         <Route path="/appGenesis-dashboard" element={<ProtectedRoute><AppGenesisDashboard /></ProtectedRoute>} />
         <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
        <Route path="/sendsms" element={<ProtectedRoute><SendSms /></ProtectedRoute>} />
+       <Route path="/apply-discount" element={<ProtectedRoute><ApplyDiscount /></ProtectedRoute>} />
 
          <Route
           path="/approve-students"

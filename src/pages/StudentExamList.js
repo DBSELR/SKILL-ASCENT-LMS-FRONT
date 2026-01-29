@@ -591,7 +591,7 @@ function ExamCard({ exam, formatDate, formatTime, getExamStatus, openGuidelines,
                 <div className="d-flex gap-2 flex-wrap justify-content-center" style={{ gap: '20px' }}>
                   {exam.fileurl && (
                     <a
-                      href={`https://api.skillascent.in${exam.fileurl}`}
+                      href={`https://localhost:7045${exam.fileurl}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-sm btn-outline-primary"

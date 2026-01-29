@@ -597,7 +597,7 @@ function InstructorExamCreate() {
   const fetchInitialData = async (token) => {
     try {
       const res = await fetch(
-        "https://api.skillascent.in/api/Programme/GetUniqueBatches",
+        "https://localhost:7045/api/Programme/GetUniqueBatches",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
