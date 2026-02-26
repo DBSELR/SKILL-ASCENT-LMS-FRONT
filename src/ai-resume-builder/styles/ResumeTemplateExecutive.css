@@ -1,0 +1,315 @@
+/* Executive Template Styles - Matches "Frence" Reference */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+
+.template-executive-refreshed {
+    width: 100%;
+    min-height: 29.7cm;
+    /* A4 height */
+    background-color: #fcfcfc;
+    /* Very light grey/off-white background */
+    color: #444;
+    font-family: 'Lato', sans-serif;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- Layout --- */
+
+/* Left Sidebar */
+.exec-sidebar {
+    width: 35%;
+    padding: 40px 30px;
+    background-color: #f7f7f7;
+    /* Slightly darker than main bg if needed, or keeping it subtle */
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Right Main Content */
+.exec-main {
+    width: 65%;
+    padding: 50px 40px;
+    position: relative;
+}
+
+/* --- Components --- */
+
+/* Photo Area */
+.exec-photo-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.exec-photo-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    position: relative;
+    z-index: 2;
+}
+
+.exec-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.exec-initials {
+    width: 100%;
+    height: 100%;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-family: 'Playfair Display', serif;
+    color: #666;
+}
+
+/* Decorative Stars */
+.star-decoration {
+    position: absolute;
+    color: #666;
+    font-size: 1.5rem;
+    z-index: 3;
+}
+
+.star-top-right {
+    top: 10px;
+    right: 0px;
+}
+
+.star-bottom-left {
+    bottom: 10px;
+    left: 0px;
+}
+
+/* Sidebar Sections */
+.exec-sidebar-section {
+    margin-bottom: 20px;
+}
+
+.exec-sidebar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: #444;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #d0d0d0;
+    padding-bottom: 5px;
+    font-weight: 400;
+}
+
+/* Contact List */
+.exec-contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.exec-contact-item {
+    display: flex;
+    align-items: flex-start;
+    /* Align top for multiple lines */
+    gap: 12px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.contact-icon {
+    width: 18px;
+    text-align: center;
+    font-size: 1rem;
+    color: #aaa;
+    /* Subtle icon color */
+}
+
+/* Skills List */
+.exec-skills-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.exec-skill-item {
+    margin-bottom: 12px;
+    display: flex;
+    /* alignment */
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #555;
+    font-weight: 400;
+    /* Medium weight */
+}
+
+.skill-bullet {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+/* Header (Main Content) */
+.exec-header {
+    position: relative;
+    margin-bottom: 60px;
+    text-align: center;
+    z-index: 10;
+}
+
+.exec-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 10rem;
+    color: #d8d8d0;
+    /* Beige/Grey specific to reference */
+    opacity: 0.4;
+    z-index: -1;
+    font-style: italic;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.exec-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.exec-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #666;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-style: italic;
+    /* Or just serif regular */
+}
+
+/* Main Sections */
+.exec-main-section {
+    margin-bottom: 40px;
+}
+
+.exec-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: #444;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #d0d0d0;
+    padding-bottom: 10px;
+}
+
+/* Timeline/List Items */
+.exec-timeline-item {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 25px;
+    border-left: 1px solid #ddd;
+}
+
+.exec-timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 5px;
+    width: 7px;
+    height: 7px;
+    background-color: #ccc;
+    /* Dot color */
+    border-radius: 50%;
+}
+
+.exec-item-header {
+    margin-bottom: 5px;
+}
+
+.exec-role {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.exec-company {
+    font-size: 0.95rem;
+    color: #555;
+    margin-top: 2px;
+}
+
+.exec-date {
+    font-size: 0.85rem;
+    color: #888;
+    position: absolute;
+    right: 0;
+    top: 0;
+    text-align: right;
+}
+
+.exec-description {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+
+/* References Grid */
+.exec-references-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.exec-ref-item {
+    font-size: 0.9rem;
+}
+
+.exec-ref-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.exec-ref-company {
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+
+.exec-ref-contact {
+    color: #666;
+    margin-bottom: 2px;
+}
+
+/* Print Adjustments */
+@media print {
+    @page {
+        margin: 0;
+        size: auto;
+    }
+
+    .template-executive-refreshed {
+        min-height: 100vh;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

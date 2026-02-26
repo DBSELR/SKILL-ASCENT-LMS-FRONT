@@ -179,6 +179,14 @@ import SendSms from "./pages/SendSms";
 import ApplyDiscount from "./pages/ApplyDiscount";
 
 
+import ResumeDashboard from "./ai-resume-builder/pages/ResumeDashboard.js";
+import CreateResume from "./ai-resume-builder/pages/CreateResume.js";
+import TemplateSelection from "./ai-resume-builder/pages/TemplateSelection.js";
+import ResumeEditor from "./ai-resume-builder/pages/ResumeEditor.js";
+import ResumePreview from "./ai-resume-builder/pages/ResumePreview.js";
+import CoverLetterGenerator from "./ai-resume-builder/pages/CoverLetterGenerator.js";
+
+
 function App() {
   const loggedInStudentId = 1;
    const connectionRef = useRef(null);
@@ -564,6 +572,18 @@ function App() {
 
 <Route path="/payment-result" element={<PaymentResult />} />
 <Route path="/payments-page" element={<PaymentsPage />} />
+
+
+
+<Route path="/ai-resume-dashboard" element={<ResumeDashboard />} />
+                    <Route path="/create" element={<CreateResume />} />
+                    <Route path="/templates" element={<TemplateSelection />} />
+                    <Route path="/editor" element={<ResumeEditor />} />
+                    <Route path="/preview" element={<ResumePreview />} />
+                    <Route path="/cover-letter" element={<CoverLetterGenerator />} />
+
+
+
       </Routes>
 
       {/* ✅ Global footer */}
