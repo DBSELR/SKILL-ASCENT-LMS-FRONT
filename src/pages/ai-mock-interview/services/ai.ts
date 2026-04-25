@@ -56,7 +56,7 @@ Return ONLY a valid JSON array of strings containing this 1 question. Do not inc
     try {
       const parsed = JSON.parse(text);
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    } catch {}
+    } catch { }
 
     return [text]; // return as array fallback
   } catch (e) {
