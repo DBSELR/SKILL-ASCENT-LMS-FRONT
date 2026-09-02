@@ -185,7 +185,8 @@ import TemplateSelection from "./ai-resume-builder/pages/TemplateSelection.js";
 import ResumeEditor from "./ai-resume-builder/pages/ResumeEditor.js";
 import ResumePreview from "./ai-resume-builder/pages/ResumePreview.js";
 import CoverLetterGenerator from "./ai-resume-builder/pages/CoverLetterGenerator.js";
-
+import AtsResumeGenerator from "./pages/AtsResumeGenerator";
+import AiMockInterview from "./pages/ai-mock-interview";
 
 function App() {
   const loggedInStudentId = 1;
@@ -581,6 +582,8 @@ function App() {
                     <Route path="/editor" element={<ResumeEditor />} />
                     <Route path="/preview" element={<ResumePreview />} />
                     <Route path="/cover-letter" element={<CoverLetterGenerator />} />
+                    <Route path="/ats-resume-generator" element={<AtsResumeGenerator />} />
+                    <Route path="/ai-mock-interview/*" element={<AiMockInterview />} />
 
 
 

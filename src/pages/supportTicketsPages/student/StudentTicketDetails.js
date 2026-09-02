@@ -2,9 +2,9 @@ import React from "react";
 import HeaderTop from "../../../components/HeaderTop";
 import LeftSidebar from "../../../components/LeftSidebar";
 import RightSidebar from "../../../components/RightSidebar";
-import Footer from "../../../components/Footer";
+//import Footer from "../../../components/Footer";
 import TicketStatusBadge from "../../../components/supportTickets/TicketStatusBadge";
-import API_BASE_URL from "../../../config";
+//import API_BASE_URL from "../../../config";
 
 const StudentTicketDetails = () => {
   const ticket = {
