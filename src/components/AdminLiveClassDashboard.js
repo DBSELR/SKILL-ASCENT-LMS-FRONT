@@ -165,7 +165,14 @@ const calendarEvents = classes.map((cls) => ({
                                 <div className="col-lg-4 col-md-6 mb-4" key={cls.liveClassId}>
                                   <div className="card shadow-sm h-100 border-0">
                                     <div className="card-body d-flex flex-column">
-                                      <h5 className="text-primary font-weight-bold mb-2">{cls.className}</h5>
+                                       <h5 className="text-primary font-weight-bold mb-2 d-flex align-items-center justify-content-between">
+                                         <span>{cls.className}</span>
+                                         {(cls.isSpecialClass || cls.IsSpecialClass) && (
+                                           <span className="badge bg-danger text-white ms-2" style={{ fontSize: "0.75rem" }}>
+                                             🔒 Special Class
+                                           </span>
+                                         )}
+                                       </h5>
                                       <p className="text-muted mb-1"><strong>Instructor:</strong> {cls.instructorName}</p>
                                       <p className="text-muted mb-1"><strong>Subject:</strong> {cls.paperCode}-{cls.paperName} ({cls.semester}/{cls.batchName})</p>
                                       <p className="text-muted mb-3">
@@ -191,24 +198,23 @@ const calendarEvents = classes.map((cls) => ({
                                         <span className={`badge px-3 py-2 ${status === "Scheduled" ? "badge-primary" : status === "Live Now" ? "badge-success jiggle-effect" : "bg-secondary"}`}>
                                           {status}
                                         </span>
-                                        {status === "Live Now" ? (
-                                          <button
-                                            className="btn btn-sm btn-outline-primary rounded-pill"
-                                            onClick={() => {
-                                              if (cls.meetingLink && cls.meetingLink !== "link") {
-                                                window.open(cls.meetingLink, "_blank");
-                                              } else {
-                                                alert("Meeting link not available.");
-                                              }
-                                            }}
-                                          >
-                                            <i className="fa fa-play-circle mr-1"></i> Join
-                                          </button>
-                                        ) : status === "Completed" ? (
-                                          <span className="text-muted">Class completed</span>
-                                        ) : (
-                                          <span className="text-muted">Not yet available</span>
-                                        )}
+                                         {status !== "Completed" ? (
+                                           <button
+                                             className="btn btn-sm btn-outline-primary rounded-pill"
+                                             onClick={() => {
+                                               const tenantId = "dce6596e-28ff-4399-97bb-e8c9467a551d";
+                                               const organizerUserId = "6976db0f-f0a3-4fe2-b4ab-b92ed7b81dea";
+                                               const link = (cls.meetingLink && cls.meetingLink.trim() !== "" && cls.meetingLink !== "link")
+                                                 ? cls.meetingLink
+                                                 : `https://teams.microsoft.com/l/meetup-join/19%3ameeting_${cls.liveClassId || Date.now()}%40thread.v2/0?context=%7b%22Tid%22%3a%22${tenantId}%22%2c%22Oid%22%3a%22${organizerUserId}%22%7d`;
+                                               window.open(link, "_blank");
+                                             }}
+                                           >
+                                             <i className="fa fa-play-circle mr-1"></i> Join
+                                           </button>
+                                         ) : (
+                                           <span className="text-muted">Class completed</span>
+                                         )}
                                       </div>
                                     </div>
                                   </div>

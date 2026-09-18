@@ -199,9 +199,12 @@ const StudentLiveClassView = () => {
   }
 
   // Always open meeting (even if attendance API fails)
-  if (cls.meetingLink) {
-    window.open(cls.meetingLink, "_blank", "noopener,noreferrer");
-  }
+  const tenantId = "dce6596e-28ff-4399-97bb-e8c9467a551d";
+  const organizerUserId = "6976db0f-f0a3-4fe2-b4ab-b92ed7b81dea";
+  const meetingUrl = (cls.meetingLink && cls.meetingLink.trim() !== "" && cls.meetingLink !== "link")
+    ? cls.meetingLink
+    : `https://teams.microsoft.com/l/meetup-join/19%3ameeting_${cls.liveClassId || Date.now()}%40thread.v2/0?context=%7b%22Tid%22%3a%22${tenantId}%22%2c%22Oid%22%3a%22${organizerUserId}%22%7d`;
+  window.open(meetingUrl, "_blank", "noopener,noreferrer");
 };
 
 
@@ -302,7 +305,14 @@ const StudentLiveClassView = () => {
                                 <div className="col-lg-4 col-md-6 mb-4" key={cls.liveClassId}>
                                   <div className="card shadow-sm h-100">
                                     <div className="card-body d-flex flex-column">
-                                      <h5 className="text-primary">{cls.className}</h5>
+                                      <h5 className="text-primary d-flex align-items-center justify-content-between">
+                                         <span>{cls.className}</span>
+                                         {(cls.isSpecialClass || cls.IsSpecialClass) && (
+                                           <span className="badge bg-danger text-white ms-2" style={{ fontSize: "0.75rem" }}>
+                                             🔒 Special Class
+                                           </span>
+                                         )}
+                                       </h5>
                                       <p className="text-muted mb-1"><strong>Instructor:</strong> {cls.instructorName || "-"}</p>
                                       <p className="text-muted mb-1"><strong>Subject:</strong> {cls.papercode}-{cls.papername}</p>
                                       <p className="text-muted mb-3">
@@ -320,14 +330,14 @@ const StudentLiveClassView = () => {
                                           {status !== "Completed" && <CountdownTimer startDateTime={startDateTime} />}
                                         </div>
 
-                                        {cls.meetingLink && canJoin(cls) && (
-  <button
-    className="btn btn-sm btn-success mt-2"
-    onClick={() => handleJoinClick(cls)}
-  >
-    <i className="fa fa-play-circle mr-1"></i> Join
-  </button>
-)}
+                                        {status !== "Completed" && (
+                                           <button
+                                             className="btn btn-sm btn-success mt-2"
+                                             onClick={() => handleJoinClick(cls)}
+                                           >
+                                             <i className="fa fa-play-circle mr-1"></i> Join
+                                           </button>
+                                         )}
 
 
                                         {cls.fileurl && (

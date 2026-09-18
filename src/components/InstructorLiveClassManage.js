@@ -69,6 +69,8 @@ function InstructorLiveClassManage() {
     meetingLink: "",
     examinationID: "",
     batchName: "",
+    isSpecialClass: false,
+    allowedStudentEmails: "",
   });
 
   // auth data
@@ -270,12 +272,15 @@ function InstructorLiveClassManage() {
 
     const payload = {
       ...form,
+      meetingLink: form.meetingLink || "",
       instructorId: parseInt(instructorId),
       examinationID,
       liveDate: start.toISOString(),
       startTime: normalizedStart,
       endTime: normalizedEnd,
       status: "Scheduled",
+      isSpecialClass: form.isSpecialClass,
+      allowedStudentEmails: form.allowedStudentEmails,
     };
 
     const url = editingId
@@ -317,6 +322,8 @@ function InstructorLiveClassManage() {
         meetingLink: "",
         examinationID: "",
         batchName: "",
+        isSpecialClass: false,
+        allowedStudentEmails: "",
       });
 
       setEditingId(null);
@@ -338,6 +345,8 @@ function InstructorLiveClassManage() {
       meetingLink: cls.meetingLink,
       examinationID: cls.examinationID,
       batchName: cls.batchName,
+      isSpecialClass: cls.isSpecialClass || cls.IsSpecialClass || false,
+      allowedStudentEmails: cls.allowedStudentEmails || cls.AllowedStudentEmails || "",
     });
     setEditingId(cls.liveClassId);
     setShowModal(true);
@@ -476,6 +485,11 @@ function InstructorLiveClassManage() {
             <span>
               <i className="fa fa-video-camera mr-2 text-primary"></i>{" "}
               {cls.className}
+              {(cls.isSpecialClass || cls.IsSpecialClass) && (
+                <span className="badge bg-danger text-white ms-2 px-2 py-1" style={{ fontSize: "0.72rem", verticalAlign: "middle" }}>
+                  🔒 Special Class
+                </span>
+              )}
             </span>
 
             <button
@@ -496,6 +510,13 @@ function InstructorLiveClassManage() {
             <i className="fa fa-book text-secondary me-1"></i>{" "}
             <strong>Subject:</strong> {subjectLine}
           </div>
+
+          {(cls.isSpecialClass || cls.IsSpecialClass) && (cls.allowedStudentEmails || cls.AllowedStudentEmails) && (
+            <div className="text-muted small mb-1">
+              <i className="fa fa-user-lock me-1 text-danger"></i>{" "}
+              <strong>Allowed Emails:</strong> {cls.allowedStudentEmails || cls.AllowedStudentEmails}
+            </div>
+          )}
 
           <div className="text-muted small mb-1">
             <i className="fa fa-calendar-alt me-1 text-secondary"></i>{" "}
@@ -526,15 +547,20 @@ function InstructorLiveClassManage() {
           <div className="d-flex flex-wrap gap-2 pt-2">
             {status !== "Completed" ? (
               <>
-                {cls.meetingLink && status !== "Completed" && (
-                  <button
-                    type="button"
-                    className="btn btn-sm mr-2 btn-success"
-                    onClick={() => window.open(cls.meetingLink, "_blank")}
-                  >
-                    <i className="fa fa-sign-in-alt me-1"></i> Join
-                  </button>
-                )}
+                <button
+                  type="button"
+                  className="btn btn-sm mr-2 btn-success"
+                  onClick={() => {
+                    const tenantId = "dce6596e-28ff-4399-97bb-e8c9467a551d";
+                    const organizerUserId = "6976db0f-f0a3-4fe2-b4ab-b92ed7b81dea";
+                    const link = (cls.meetingLink && cls.meetingLink.trim() !== "" && cls.meetingLink !== "link")
+                      ? cls.meetingLink
+                      : `https://teams.microsoft.com/l/meetup-join/19%3ameeting_${cls.liveClassId || Date.now()}%40thread.v2/0?context=%7b%22Tid%22%3a%22${tenantId}%22%2c%22Oid%22%3a%22${organizerUserId}%22%7d`;
+                    window.open(link, "_blank");
+                  }}
+                >
+                  <i className="fa fa-sign-in-alt me-1"></i> Join
+                </button>
                 <button
                   type="button"
                   className="btn btn-sm mr-2 btn-info"
@@ -859,7 +885,7 @@ function InstructorLiveClassManage() {
                 }
               />
             </div>
-            <div className="col-md-6">
+            <div className="col-md-12">
               <input
                 type="date"
                 className="form-control"
@@ -877,7 +903,7 @@ function InstructorLiveClassManage() {
                 }
               />
             </div>
-            <div className="col-md-6 mt-2">
+            <div className="col-md-6">
               <input
                 type="time"
                 className="form-control"
@@ -887,18 +913,7 @@ function InstructorLiveClassManage() {
                 }
               />
             </div>
-            <div className="col-md-6 mt-2">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Meeting Link"
-                value={form.meetingLink}
-                onChange={(e) =>
-                  setForm({ ...form, meetingLink: e.target.value })
-                }
-              />
-            </div>
-            <div className="col-md-12 mt-2">
+            <div className="col-md-12">
               <select
                 className="form-control"
                 value={form.examinationID}
@@ -913,6 +928,48 @@ function InstructorLiveClassManage() {
                 ))}
               </select>
             </div>
+
+            <div className="col-md-12 mt-2">
+              <div className="form-check form-switch mb-2">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="isSpecialClassCheck"
+                  checked={form.isSpecialClass}
+                  onChange={(e) =>
+                    setForm({ ...form, isSpecialClass: e.target.checked })
+                  }
+                  style={{ cursor: "pointer" }}
+                />
+                <label
+                  className="form-check-label font-weight-bold text-danger ms-2"
+                  htmlFor="isSpecialClassCheck"
+                  style={{ cursor: "pointer" }}
+                >
+                  🔒 Special Class (Restrict access to specific student emails)
+                </label>
+              </div>
+            </div>
+
+            {form.isSpecialClass && (
+              <div className="col-md-12">
+                <label className="small text-muted mb-1 font-weight-bold">
+                  Allowed Student Gmails / Email Addresses (comma-separated):
+                </label>
+                <textarea
+                  className="form-control"
+                  rows="2"
+                  placeholder="e.g. student1@gmail.com, student2@gmail.com"
+                  value={form.allowedStudentEmails}
+                  onChange={(e) =>
+                    setForm({ ...form, allowedStudentEmails: e.target.value })
+                  }
+                />
+                <small className="text-muted">
+                  Only students with these exact email addresses will see and be able to join this class.
+                </small>
+              </div>
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>
