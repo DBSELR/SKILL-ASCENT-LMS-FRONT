@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Mic, Square, Play, LogOut, Volume2, Settings, Loader2 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { generateInitialQuestions, generateFollowUpQuestion, HistoryItem } from '../services/ai';
 
 import StreamingAvatar, { AvatarQuality, VoiceEmotion, TaskType, StreamingEvents } from '@heygen/streaming-avatar';
@@ -328,21 +327,17 @@ export default function InterviewSession() {
         question_order: i,
         user_answer: answers[i] || ''
       }));
+      localStorage.setItem(`interview_questions_${sessionId}`, JSON.stringify(localQuestions));
       localStorage.setItem(`mock_questions_${sessionId}`, JSON.stringify(localQuestions));
 
-      for (let i = 0; i < questions.length; i++) {
-          await supabase.from('interview_questions').insert([
-            {
-              session_id: sessionId,
-              question_text: questions[i],
-              question_order: i,
-              user_answer: answers[i] || '',
-            },
-          ]);
+      const storedSessionStr = localStorage.getItem(`interview_session_${sessionId}`);
+      if (storedSessionStr) {
+        const storedSession = JSON.parse(storedSessionStr);
+        storedSession.status = 'completed';
+        localStorage.setItem(`interview_session_${sessionId}`, JSON.stringify(storedSession));
       }
-      await supabase.from('interview_sessions').update({ status: 'completed' }).eq('id', sessionId);
-    } catch {
-      console.warn("Could not save to Supabase.");
+    } catch (err) {
+      console.warn("Could not save interview session locally:", err);
     }
 
     setTimeout(() => {

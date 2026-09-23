@@ -3,7 +3,6 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { InterviewReportPDF } from '../components/InterviewReportPDF';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PlayCircle, CheckCircle2, TrendingUp, Brain, ArrowLeft, AlertCircle, Lightbulb, Video } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { InterviewSession, InterviewQuestion } from '../types';
 import { generateInterviewFeedback } from '../services/ai';
 
@@ -56,36 +55,32 @@ export default function FeedbackPage() {
       let sessionData: any = null;
       let questionsData: any = null;
 
-      if (sessionId === 'mock-session-123') {
-        const localQ = localStorage.getItem(`mock_questions_${sessionId}`);
-        if (localQ) {
-           questionsData = JSON.parse(localQ);
-           sessionData = { id: sessionId, status: 'completed', feedback: null };
-        } else {
-           questionsData = [
-             { id: 'mock-1', question_text: 'Can you walk me through your background?', user_answer: 'I am a software engineer with 5 years of experience.' },
-             { id: 'mock-2', question_text: 'What is your biggest strength?', user_answer: 'My biggest strength is problem solving.' }
-           ];
-           sessionData = { id: sessionId, status: 'completed', feedback: null };
+      const storedSession = localStorage.getItem(`interview_session_${sessionId}`);
+      const storedQuestions = localStorage.getItem(`interview_questions_${sessionId}`) || localStorage.getItem(`mock_questions_${sessionId}`);
+
+      if (storedSession) {
+        try {
+          sessionData = JSON.parse(storedSession);
+        } catch {
+          sessionData = { id: sessionId, status: 'completed', feedback: null };
         }
       } else {
-        const { data: sData, error: sessionError } = await supabase
-          .from('interview_sessions')
-          .select('*')
-          .eq('id', sessionId)
-          .maybeSingle();
+        sessionData = { id: sessionId, status: 'completed', feedback: null };
+      }
 
-        if (sessionError) throw sessionError;
-        sessionData = sData;
+      if (storedQuestions) {
+        try {
+          questionsData = JSON.parse(storedQuestions);
+        } catch {
+          questionsData = null;
+        }
+      }
 
-        const { data: qData, error: questionsError } = await supabase
-          .from('interview_questions')
-          .select('*')
-          .eq('session_id', sessionId)
-          .order('question_order', { ascending: true });
-
-        if (questionsError) throw questionsError;
-        questionsData = qData;
+      if (!questionsData || questionsData.length === 0) {
+        questionsData = [
+          { id: 'mock-1', question_text: 'Can you walk me through your background?', user_answer: 'I am a software engineer with 5 years of experience.' },
+          { id: 'mock-2', question_text: 'What is your biggest strength?', user_answer: 'My biggest strength is problem solving.' }
+        ];
       }
 
       setSession(sessionData);
@@ -118,12 +113,13 @@ export default function FeedbackPage() {
       });
       aiFeedback.recommended_responses = recommended_responses;
 
-      await supabase
-        .from('interview_sessions')
-        .update({ feedback: aiFeedback })
-        .eq('id', sessionId);
-
-      setSession((prev) => (prev ? { ...prev, feedback: aiFeedback } : null));
+      setSession((prev) => {
+        const updated = prev ? { ...prev, feedback: aiFeedback } : null;
+        if (updated) {
+          localStorage.setItem(`interview_session_${sessionId}`, JSON.stringify(updated));
+        }
+        return updated;
+      });
     } catch (err) {
       console.error('Error generating and saving feedback:', err);
     }
@@ -250,10 +246,10 @@ export default function FeedbackPage() {
                   loading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-[#0A0D14] border-t-transparent rounded-full animate-spin" />
-                      PREPARING...
+                      <span>PREPARING...</span>
                     </>
                   ) : (
-                    'EXPORT PDF'
+                    <span>EXPORT PDF</span>
                   )
                 )}
               </PDFDownloadLink>

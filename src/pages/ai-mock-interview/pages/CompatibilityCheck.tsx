@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Brain, CheckCircle2, XCircle, Video, Mic, Monitor, AlertCircle, ArrowLeft } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 interface CheckStatus {
   browser: boolean | null;
@@ -78,7 +77,7 @@ export default function CompatibilityCheck() {
 
   const allChecksPassed = checks.browser && checks.camera && checks.microphone;
 
-  const handleContinue = async () => {
+  const handleContinue = () => {
     if (!allChecksPassed) {
       alert('Please ensure all compatibility checks pass before continuing.');
       return;
@@ -92,40 +91,24 @@ export default function CompatibilityCheck() {
     }
 
     const formData = JSON.parse(setupData);
+    const sessionId = `session_${Date.now()}`;
 
-    try {
-      const { data, error } = await supabase
-        .from('interview_sessions')
-        .insert([
-          {
-            job_role: formData.jobRole,
-            industry: formData.industry || 'IT',
-            company: formData.company || null,
-            job_description: formData.jobDescription || null,
-            interview_type: formData.interviewType,
-            difficulty_level: formData.difficultyLevel || null,
-            interviewer: formData.interviewer,
-            custom_questions: formData.customQuestions ? formData.customQuestions.filter((q: string) => q.trim() !== '') : [],
-            status: 'in_progress',
-          },
-        ])
-        .select()
-        .single();
+    const sessionObj = {
+      id: sessionId,
+      job_role: formData.jobRole,
+      industry: formData.industry || 'IT',
+      company: formData.company || null,
+      job_description: formData.jobDescription || null,
+      interview_type: formData.interviewType,
+      difficulty_level: formData.difficultyLevel || null,
+      interviewer: formData.interviewer,
+      custom_questions: formData.customQuestions ? formData.customQuestions.filter((q: string) => q.trim() !== '') : [],
+      status: 'in_progress',
+      created_at: new Date().toISOString()
+    };
 
-      if (error) throw error;
-
-      if (data) {
-        navigate('/ai-mock-interview/interview', { state: { sessionId: data.id, setupData: formData } });
-      }
-    } catch (err: any) {
-      console.error('Error creating session:', err);
-      if (err.message === 'Failed to fetch' || err.message?.includes('fetch')) {
-         console.warn('Database offline or keys missing. Proceeding in mock mode.');
-         navigate('/ai-mock-interview/interview', { state: { sessionId: 'mock-session-123', setupData: formData } });
-      } else {
-         alert('Error creating interview session. Please try again. Details: ' + (err.message || JSON.stringify(err)));
-      }
-    }
+    localStorage.setItem(`interview_session_${sessionId}`, JSON.stringify(sessionObj));
+    navigate('/ai-mock-interview/interview', { state: { sessionId, setupData: formData } });
   };
 
   const CheckItem = ({ icon: Icon, label, status }: { icon: any; label: string; status: boolean | null }) => (
